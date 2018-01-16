@@ -1,0 +1,43 @@
+version: '3.4'
+
+services:
+
+  #Setting up the DNS on host machine everything works good, meaning we can use whoami.docker and other.docker!
+  dns:
+    image: andyshinn/dnsmasq
+    cap_add: 
+      - NET_ADMIN
+    ports:
+      - "127.0.0.2:53:53/udp"
+      - "127.0.0.2:53:53/tcp"
+    command: --address=/docker/127.0.0.2 --address=/test.ping/127.0.0.3 --dns-forward-max=1000 --log-facility=- 
+
+  #The reverse proxy
+  nginx-proxy:
+    image: jwilder/nginx-proxy
+    ports:
+      - "127.0.0.2:80:80"
+    environment:
+        #192.168.65.2 is (usually) the docker host on my tests, discovered by checking which networks were reachable from a container
+      - "DOCKER_HOST=tcp://192.168.65.2:2375"
+
+  "whoami.docker":
+    image: jwilder/whoami
+    environment:
+      - VIRTUAL_HOST=whoami.docker
+
+  "other.docker":
+    image: jwilder/whoami
+    environment:
+      - VIRTUAL_HOST=other.docker
+
+  "postgresql.docker":
+    image: postgres:alpine
+    environment: 
+      - POSTGRES_PASSWORD=example
+  
+  # Busybox to be able to test DNS resolution inside docker network
+  busybox:
+    image: busybox
+    command: "ping 127.0.0.1"
+    
