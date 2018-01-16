@@ -10,7 +10,11 @@ services:
     ports:
       - "127.0.0.2:53:53/udp"
       - "127.0.0.2:53:53/tcp"
-    command: --address=/docker/127.0.0.2 --address=/test.ping/127.0.0.3 --host-record=postgresql.docker,127.0.0.4 --filterwin2k --dns-forward-max=300 -q --dns-loop-detect --log-facility=-
+    command: |
+      --address=/docker/127.0.0.2 
+      --address=/test.ping/127.0.0.3 
+      --host-record=postgresql.docker,127.0.0.4 
+      --filterwin2k --dns-forward-max=300 -q --dns-loop-detect --log-facility=-
 
   #The reverse HTTP proxy
   nginx-proxy:
