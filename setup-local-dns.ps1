@@ -10,4 +10,5 @@ foreach($i in $interfacesToUpdate){
     Set-DNSClientServerAddress –interfaceIndex $i.InterfaceIndex –ServerAddresses $newDnsServers
 }
 
+#Do a ping to a expected DNS resolved domain
 ping test.ping
